@@ -25,6 +25,12 @@ int main(int argc, char* argv[]){
     }
     int N = atoi(argv[1]);
     int num_threads = atoi(argv[2]);
+
+      // Check for valid input
+    if (N <= 0 || num_threads <= 0) {
+        printf("Invalid input. N and num_threads must be positive integers.\n");
+        return 1;
+    }
     
     printf("DFTW calculation with N = %d \n",N);
 

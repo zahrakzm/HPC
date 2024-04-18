@@ -32,7 +32,7 @@
 #         rm -f $(EXEC)_*
 
 # Define the C compiler
-CC = gcc
+CC = icc
 
 # Define C compiler flags (feel free to modify)
 CFLAGS = -Wall

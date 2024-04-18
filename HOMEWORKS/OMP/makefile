@@ -29,5 +29,5 @@ run_%:
 
 # Clean rule
 clean:
-    rm -f $(EXEC)_*
+    \t rm -f $(EXEC)_*
 

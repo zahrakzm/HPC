@@ -42,7 +42,7 @@ all: main
 
 # Target to compile the source file into an object file (main.o)
 main.o: main.c
-    $(CC) $(CFLAGS) -c main.c -o main.o
+    $(CC) $(CFLAGS) -c omp_homework.c -o main.o
 
 # Target to clean up generated files (clean)
 clean:

@@ -19,7 +19,9 @@ int printResults(double* xr, double* xi, int N);
 
 int main(int argc, char* argv[]){
 // size of input array
-    int N = 10000;
+    int N = atoi(argv[1]);
+    int num_threads = atoi(argv[2]);
+    
     printf("DFTW calculation with N = %d \n",N);
 
     double* xr = (double*) malloc (N *sizeof(double));
@@ -68,6 +70,8 @@ int main(int argc, char* argv[]){
 // idft: 1 direct DFT, -1 inverse IDFT (Inverse DFT)
 int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N){
   int k, n;
+  omp_set_num_threads(mun_threads)
+  #pragma omp parallel for private(k,n) shared(Xr_o, Xi_o, xr, xi)
   for (k=0 ; k<N ; k++)
   {
       for (n=0 ; n<N ; n++)  {

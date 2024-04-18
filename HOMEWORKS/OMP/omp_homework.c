@@ -19,8 +19,8 @@ int printResults(double* xr, double* xi, int N);
 
 int main(int argc, char* argv[]){
 // size of input array
-    int N = argv[1];
-    int num_threads = argv[2];
+    int N = atoi(argv[1]);
+    int num_threads = atoi(argv[2]);
     
     printf("DFTW calculation with N = %d \n",N);
 

@@ -1,20 +1,20 @@
 # # Makefile for compiling and running code with different variable values
 
 # # Compiler
-# CC = icc
+CC = icc
 
 # # Compiler flags
-# CFLAGS = -fopenmp -g
+CFLAGS = -fopenmp -g
 
 # # Source file
-# SRC = omp_homework.c
+SRC = omp_homework.c
 
 # # Executable name
-# TARGET = omp_homework
+TARGET = omp_homework
 
 # # Variable values
-# N = 1000 10000 30000
-# num_threads = 1 2 4 6 8 12 16 20 24
+N = 1000 10000 30000
+num_threads = 1 2 4 6 8 12 16 20 24
 
 all: $(TARGET)
 
@@ -23,8 +23,8 @@ $(TARGET): $(SRC)
 
 run:
 	@$(foreach n, $(N), \
-		$(foreach THREAD, $(THREADS), \
-			echo Running with n=$(n) and THREADS=$(THREAD); \
+		$(foreach THREAD, $(num_threads), \
+			echo Running with N=$(n) and num_threads=$(THREAD); \
 			./$(TARGET) $(n) $(THREAD); \
 		) \
 	)

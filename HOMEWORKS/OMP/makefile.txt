@@ -1,23 +1,23 @@
 # Makefile for compiling and running code with different variable values
 
 # Compiler
-CC = gcc
+CC = icc
 
 # Compiler flags
-CFLAGS = -Wall -Wextra
+CFLAGS = -fopenmp -g
 
 # Source file
-SRC = your_code.c
+SRC = omp_homework.c
 
 # Executable name
-EXEC = your_executable
+EXEC = omp_homework
 
 # Variable values
-VAR1_VALUES = value1 value2 value3
-VAR2_VALUES = valueA valueB valueC
+N = 1000 10000 30000
+num_threads = 1 2 4 6 8 12 16 20 24
 
 # Define all combinations of variable values
-ALL_COMBINATIONS := $(foreach v1,$(VAR1_VALUES),$(foreach v2,$(VAR2_VALUES),$(v1)_$(v2)))
+ALL_COMBINATIONS := $(foreach v1,$(N),$(foreach v2,$(num_threads),$(v1)_$(v2)))
 
 # Define targets for each combination of variable values
 all: $(addprefix run_,$(ALL_COMBINATIONS))

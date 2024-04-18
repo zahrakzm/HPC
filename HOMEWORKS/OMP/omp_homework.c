@@ -10,7 +10,7 @@
 #define PI2 6.28318530718
 #define R_ERROR 0.01
 
-int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N);
+int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N, int num_threads);
 int fillInput(double* xr, double* xi, int N);
 int setOutputZero(double* Xr_o, double* Xi_o, int N);
 int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_r, int N);

@@ -24,7 +24,7 @@ all: $(addprefix run_,$(ALL_COMBINATIONS))
 
 # Rule to compile and link executable with specific variable values
 $(EXEC)_%: $(SRC)
-  $(CC) $(CFLAGS) -DVAR1=$(word 1,$(subst _, ,$*)) -DVAR2=$(word 2,$(subst _, ,$*)) $(SRC) -o $@
+\t$(CC) $(CFLAGS) -DVAR1=$(word 1,$(subst _, ,$*)) -DVAR2=$(word 2,$(subst _, ,$*)) $(SRC) -o $@
 
 # Rule to run the executable
 run_%: $(EXEC)_% 

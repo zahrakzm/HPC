@@ -16,19 +16,14 @@ EXEC = omp_homework
 N = 1000 10000 30000
 num_threads = 1 2 4 6 8 12 16 20 24
 
-# Define all combinations of variable values
-ALL_COMBINATIONS := $(foreach v1,$(N),$(foreach v2,$(num_threads),$(v1)_$(v2)))
-
-# Define targets for each combination of variable values
-all: $(addprefix run_,$(ALL_COMBINATIONS))
-
-# Rule to compile and link executable with specific variable values
-$(EXEC)_%: $(SRC)
-    $(CC) $(CFLAGS) -DVAR1=$(word 1,$(subst _, ,$*)) -DVAR2=$(word 2,$(subst _, ,$*)) $(SRC) -o $@
-
-# Rule to run the executable
-run_%: $(EXEC)_% 
-    ./$< $(word 1,$(subst _, ,$*)) $(word 2,$(subst _, ,$*))
+all:
+    @for var1 in $(N); do \
+        for var2 in $(num_threads); do \
+            echo "Running with Var1 = $$var1, Var2 = $$var2"; \
+            $(CC) $(CFLAGS) -DVar1=$$var1 -DVar2=$$var2 $(SRC) -o $(EXEC)_$$var1_$$var2; \
+            ./$(EXEC)_$$var1_$$var2; \
+        done \
+    done
 
 # Clean rule
 clean:

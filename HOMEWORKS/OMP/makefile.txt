@@ -1,7 +1,7 @@
 # Makefile for compiling and running code with different variable values
 
 # Compiler
-CC = icc
+CC = gcc
 
 # Compiler flags
 CFLAGS = -fopenmp -g

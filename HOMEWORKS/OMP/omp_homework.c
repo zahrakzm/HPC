@@ -52,10 +52,10 @@ int main(int argc, char* argv[]){
 
     // DFT
     int idft = 1;
-    DFT(idft,xr,xi,Xr_o,Xi_o,N);
+    DFT(idft,xr,xi,Xr_o,Xi_o,N,num_threads);
     // IDFT
     idft = -1;
-    DFT(idft,Xr_o,Xi_o,xr_check,xi_check,N);
+    DFT(idft,Xr_o,Xi_o,xr_check,xi_check,N,num_threads);
 
     // stop timer
     double run_time = omp_get_wtime() - start_time;
@@ -78,10 +78,10 @@ int main(int argc, char* argv[]){
 
 // DFT/IDFT routine
 // idft: 1 direct DFT, -1 inverse IDFT (Inverse DFT)
-int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N){
+int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N, int num_threads){
   int k, n;
   omp_set_num_threads(num_threads);
-  #pragma omp parallel for private(k,n) shared(Xr_o, Xi_o, xr, xi);
+  #pragma omp parallel for private(k,n) shared(Xr_o, Xi_o, xr, xi)
   for (k=0 ; k<N ; k++)
   {
       for (n=0 ; n<N ; n++)  {

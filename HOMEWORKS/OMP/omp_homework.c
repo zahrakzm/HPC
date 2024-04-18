@@ -80,8 +80,8 @@ int main(int argc, char* argv[]){
 // idft: 1 direct DFT, -1 inverse IDFT (Inverse DFT)
 int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N){
   int k, n;
-  omp_set_num_threads(num_threads)
-  #pragma omp parallel for private(k,n) shared(Xr_o, Xi_o, xr, xi)
+  omp_set_num_threads(num_threads);
+  #pragma omp parallel for private(k,n) shared(Xr_o, Xi_o, xr, xi);
   for (k=0 ; k<N ; k++)
   {
       for (n=0 ; n<N ; n++)  {

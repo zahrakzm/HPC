@@ -16,20 +16,20 @@ EXEC = omp_homework
 SIZE = 1000 10000 30000
 NUM_THREADS = 1 2 4 8 12 16 20 24 30
 
-# Define all combinations of variable values
-ALL_COMBINATIONS := $(foreach v1,$(SIZE),$(foreach v2,$(NUM_THREADS),$(v1)_$(v2)))
+all: $(TARGET)
 
-# Define targets for each combination of variable values
-all: $(addprefix run_,$(ALL_COMBINATIONS))
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
-# Rule to compile and link executable with specific variable values
-$(EXEC)_%: $(SRC)
-    $(CC) $(CFLAGS) -DVAR1=$(word 1,$(subst _, ,$*)) -DVAR2=$(word 2,$(subst _, ,$*)) $(SRC) -o $@
+run:
+	@$(foreach N, $(NS), \
+		$(foreach THREAD, $(THREADS), \
+			echo Running with N=$(N) and THREADS=$(THREAD); \
+			./$(TARGET) $(N) $(THREAD); \
+		) \
+	)
 
-# Rule to run the executable
-run_%: $(EXEC)_% 
-    ./$< $(word 1,$(subst _, ,$*)) $(word 2,$(subst _, ,$*))
-
-# Clean rule
 clean:
-    rm -f $(EXEC)_* $(EXEC)
+	rm -f $(TARGET)
+
+.PHONY: all run clean

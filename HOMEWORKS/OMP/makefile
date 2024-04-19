@@ -22,7 +22,7 @@ $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
 run:
-	@$(foreach N, $(NS), \
+	@$(foreach N, $(SIZE), \
 		$(foreach THREAD, $(THREADS), \
 			echo Running with N=$(N) and THREADS=$(THREAD); \
 			./$(TARGET) $(N) $(THREAD); \

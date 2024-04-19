@@ -1,7 +1,7 @@
 CC=icc
 CFLAGS=-qopenmp
 TARGET=omp_homework
-SRC=omp_homework.c
+SRC=OMP_homework.c
 
 # Values of N
 NS=100 10000 1000000

@@ -7,7 +7,7 @@ CC = icc
 CFLAGS = -Wall -Wextra
 
 # Source file
-SRC = your_code.c
+SRC = omp_homework.c
 
 # Executable name
 EXEC = your_executable

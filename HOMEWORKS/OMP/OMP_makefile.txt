@@ -4,7 +4,7 @@
 CC = icc
 
 # Compiler flags
-CFLAGS = -g -fopenmp
+CFLAGS = -g -qopenmp
 
 # Source file
 SRC = omp_homework.c

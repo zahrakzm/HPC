@@ -16,20 +16,20 @@ EXEC = omp_homework
 SIZE = 1000 10000 30000
 NUM_THREADS = 1 2 4 8 12 16 20 24 30
 
-all: $(TARGET)
+all: $(EXEC)
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
 
 run:
 	@$(foreach N, $(SIZE), \
 		$(foreach THREAD, $(NUM_THREADS), \
 			echo Running with N=$(N) and NUM_THREADS=$(THREAD); \
-			./$(TARGET) $(N) $(THREAD); \
+			./$(EXEC) $(N) $(THREAD); \
 		) \
 	)
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(EXEC)
 
 .PHONY: all run clean

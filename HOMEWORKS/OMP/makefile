@@ -1,36 +1,35 @@
-# # Makefile for compiling and running code with different variable values
+# Makefile for compiling and running code with different variable values
 
-# # Compiler
-CC = icc
+# Compiler
+CC = gcc
 
-# # Compiler flags
-CFLAGS = -fopenmp -g
+# Compiler flags
+CFLAGS = -Wall -Wextra
 
-# # Source file
-SRC = omp_homework.c
+# Source file
+SRC = your_code.c
 
-# # Executable name
-TARGET = omp_homework
+# Executable name
+EXEC = your_executable
 
-# # Variable values
-N = 1000 10000 30000
-num_threads = 1 2 4 6 8 12 16 20 24
+# Variable values
+VAR1_VALUES = value1 value2 value3
+VAR2_VALUES = valueA valueB valueC
 
-all: $(TARGET)
+# Define all combinations of variable values
+ALL_COMBINATIONS := $(foreach v1,$(VAR1_VALUES),$(foreach v2,$(VAR2_VALUES),$(v1)_$(v2)))
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+# Define targets for each combination of variable values
+all: $(addprefix run_,$(ALL_COMBINATIONS))
 
-run:
-	@$(foreach n, $(N), \
-		$(foreach THREAD, $(num_threads), \
-			echo Running with N=$(n) and num_threads=$(THREAD); \
-			./$(TARGET) $(n) $(THREAD); \
-		) \
-	)
+# Rule to compile and link executable with specific variable values
+$(EXEC)_%: $(SRC)
+    $(CC) $(CFLAGS) -DVAR1=$(word 1,$(subst _, ,$*)) -DVAR2=$(word 2,$(subst _, ,$*)) $(SRC) -o $@
 
+# Rule to run the executable
+run_%: $(EXEC)_% 
+    ./$< $(word 1,$(subst _, ,$*)) $(word 2,$(subst _, ,$*))
+
+# Clean rule
 clean:
-	rm -f $(TARGET)
-
-.PHONY: all run clean
-
+    rm -f $(EXEC)_* $(EXEC)

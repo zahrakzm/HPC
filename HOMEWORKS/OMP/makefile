@@ -23,8 +23,8 @@ $(TARGET): $(SRC)
 
 run:
 	@$(foreach N, $(SIZE), \
-		$(foreach THREAD, $(THREADS), \
-			echo Running with N=$(N) and THREADS=$(THREAD); \
+		$(foreach THREAD, $(NUM_THREADS), \
+			echo Running with N=$(N) and NUM_THREADS=$(THREAD); \
 			./$(TARGET) $(N) $(THREAD); \
 		) \
 	)

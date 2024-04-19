@@ -4,20 +4,20 @@
 CC = icc
 
 # Compiler flags
-CFLAGS = -Wall -Wextra
+CFLAGS = -g -fopenmp
 
 # Source file
 SRC = omp_homework.c
 
 # Executable name
-EXEC = your_executable
+EXEC = omp_homework
 
 # Variable values
-VAR1_VALUES = value1 value2 value3
-VAR2_VALUES = valueA valueB valueC
+SIZE = 1000 10000 30000
+NUM_THREADS = 1 2 4 8 12 16 20 24 30
 
 # Define all combinations of variable values
-ALL_COMBINATIONS := $(foreach v1,$(VAR1_VALUES),$(foreach v2,$(VAR2_VALUES),$(v1)_$(v2)))
+ALL_COMBINATIONS := $(foreach v1,$(SIZE),$(foreach v2,$(NUM_THREADS),$(v1)_$(v2)))
 
 # Define targets for each combination of variable values
 all: $(addprefix run_,$(ALL_COMBINATIONS))

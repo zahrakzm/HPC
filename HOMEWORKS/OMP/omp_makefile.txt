@@ -14,7 +14,7 @@ EXEC = omp_homework
 
 # Variable values
 SIZE = 1000 10000 30000
-NUM_THREADS = 1 2 4 8 12 16 20 24 30
+NUM_THREADS = 1 2 4 8 12 16 20 24 32 40 48
 
 all: $(EXEC)
 

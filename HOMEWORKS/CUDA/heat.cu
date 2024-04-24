@@ -17,28 +17,29 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   int i00, im10, ip10, i0m1, i0p1;
   float d2tdx2, d2tdy2;
 
-  int indexWithinTheGrid = blockIdx.x * blockDim.x + threadIdx.x;
-  //int gridStride = gridDim.x * blockDim.x;
-  //int N = (ni-2)*(nj-2);
+// define index
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
 
-  for(int index=indexWithinTheGrid; index<(ni-2)*(nj-2); index+=gridDim.x * blockDim.x){
-    int i = index % (ni-2) + 1;
-    int j = index / (nj-2) + 1;
-    //printf("i = %d\n", i);
-    //printf("j = %d\n", j);
+  for ( int index = i; index<(nj-2)*(ni-2);index+=blockDim.x*gridDim.x){
 
-    i00 = I2D(ni, i, j);
-    im10 = I2D(ni, i-1, j);
-    ip10 = I2D(ni, i+1, j);
-    i0m1 = I2D(ni, i, j-1);
-    i0p1 = I2D(ni, i, j+1);
-    
-    // evaluate derivatives
-    d2tdx2 = temp_in[im10]-2*temp_in[i00]+temp_in[ip10];
-    d2tdy2 = temp_in[i0m1]-2*temp_in[i00]+temp_in[i0p1];
-  
-    // update temperatures
-    temp_out[i00] = temp_in[i00]+fact*(d2tdx2 + d2tdy2);
+int ix=index%(ni-2)+1;
+int jx=index/(nj-2)+1;
+//printf("j = %d\n", jx);
+//printf("i = %d\n", ix);
+
+
+i00 = I2D(ni, ix, jx);
+im10 = I2D(ni, ix-1, jx);
+ip10 = I2D(ni, ix+1, jx);
+i0m1 = I2D(ni, ix, jx-1);
+i0p1 = I2D(ni, ix, jx+1);
+
+// evaluate derivatives
+d2tdx2 = temp_in[im10]-2*temp_in[i00]+temp_in[ip10];
+d2tdy2 = temp_in[i0m1]-2*temp_in[i00]+temp_in[i0p1];
+
+// update temperatures
+temp_out[i00] = temp_in[i00]+fact*(d2tdx2 + d2tdy2); 
   }
 }
 

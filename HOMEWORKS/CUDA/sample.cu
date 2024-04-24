@@ -12,7 +12,7 @@
  * `step_kernel_ref` below. Accelerate it to run as a CUDA kernel.
  */
 
-__global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, float* temp_out)
+__global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, float* temp_out, int blocksPerGrid)
 {
   int i00, im10, ip10, i0m1, i0p1;
   float d2tdx2, d2tdy2;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
   const int nj = atoi(argv[1]);
   float tfac = 8.418e-5; // thermal diffusivity of silver
 
-  int threadsPerBlock = num_threads
+  int threadsPerBlock = num_threads;
   // Calculate the total number of valid elements (excluding boundary)
   int totalElements = (ni - 2) * (nj - 2);
 
@@ -135,9 +135,10 @@ int main(int argc, char* argv[]){
   cudaMemcpy(temp2_dev, temp2_init, size, cudaMemcpyHostToDevice);
 
   cudaEventRecord(start_gpu, 0);
-  // Execute the modified version using same data
+  // Execute
+  // Execute the modified version using the same data
   for (istep = 0; istep < nstep; istep++) {
-    step_kernel_mod<<<blocksPerGrid, threadsPerBlock>>>(ni, nj, tfac, temp1_dev, temp2_dev);
+    step_kernel_mod<<<blocksPerGrid, threadsPerBlock>>>(ni, nj, tfac, temp1_dev, temp2_dev, blocksPerGrid);
     cudaDeviceSynchronize();
     // swap the temperature pointers
     float *temp_tmp = temp1_dev;

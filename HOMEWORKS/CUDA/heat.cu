@@ -19,7 +19,7 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
 
   int indexWithinTheGrid = blockIdx.x* blockDim.x+ threadIdx.x;
   int gridStride = gridDim.x * blockDim.x;
-  int N = (ni-2)*(nj-2)
+  int N = (ni-2)*(nj-2);
 
   for(int k=indexWithinTheGrid; k<N; k+=gridStride){
     int i = k % (ni-2) + 1;
@@ -75,6 +75,7 @@ int main(int argc, char* argv[]){
 
   int istep;
   int nstep = 200; // number of time steps
+  int num_threads = atoi(argv[2]);
 
   // Specify our 2D dimensions
   const int ni = atoi(argv[1]);
@@ -124,7 +125,7 @@ int main(int argc, char* argv[]){
   cudaMemcpy(temp2, temp2_init, size, cudaMemcpyHostToDevice);
 
   dim3 threadsPerBlock(num_threads);
-  dim3 blocksPerGrid(((ni/2) * (nj/2) + block.x - 1) / block.x)
+  dim3 blocksPerGrid(((ni/2) * (nj/2) + block.x - 1) / block.x);
 
   cudaEventRecord(start_gpu, 0);
   // Execute the modified version using same data

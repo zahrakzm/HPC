@@ -110,7 +110,7 @@ int main(int argc, char* argv[]){
   end = clock();
   printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
 
-  float start_malloc, start_gpu, end_gpu, end_malloc;
+  cudaEvent_t start_malloc, start_gpu, end_gpu, end_malloc;
   cudaEventCreate(&start_malloc);
   cudaEventCreate(&start_gpu);
   cudaEventCreate(&end_gpu);

@@ -77,8 +77,8 @@ int main(int argc, char* argv[]){
   int istep;
   int nstep = 200; // number of time steps
   int numt = atoi(argv[2]);
-  cudaEvent_t start, stop, start1, stop1;     // using cuda events to measure time
-  float elapsed_time_ms;       // which is applicable for asynchronous code also
+  cudaEvent_t start_malloc, stop_malloc, start_gpu, stop_gpu;     // using cuda events to measure time
+  float time_tot;       // which is applicable for asynchronous code also
 
   // Specify our 2D dimensions
   const int ni = atoi(argv[1]);
@@ -94,11 +94,11 @@ int main(int argc, char* argv[]){
   temp1 = (float*)malloc(size);
   temp2 = (float*)malloc(size);
 
-  cudaEventCreate( &start );   
-  cudaEventCreate( &start1 );
-  cudaEventCreate( &stop );  
-  cudaEventCreate( &stop1 );
-  cudaEventRecord( start1, 0 );
+  cudaEventCreate( &start_malloc );   
+  cudaEventCreate( &start_gpu );
+  cudaEventCreate( &stop_malloc );  
+  cudaEventCreate( &stop_gpu );
+  cudaEventRecord( start_gpu, 0 );
 
   float *temp1_dev, *temp2_dev, *tmp_tmp_dev;
   cudaMalloc((void **) &temp1_dev, size);
@@ -126,7 +126,7 @@ int main(int argc, char* argv[]){
     temp2_ref= temp_tmp;
   }
 
-  cudaEventRecord( start, 0 );
+  cudaEventRecord( start_malloc, 0 );
   // Execute the modified version using same data
   for (istep=0; istep < nstep; istep++) {
     step_kernel_mod<<<grid,block>>>( ni, nj, tfac, temp1_dev, temp2_dev);
@@ -137,17 +137,17 @@ int main(int argc, char* argv[]){
     temp2_dev= tmp_tmp_dev;
   }
 
-  cudaEventRecord( stop, 0 );
-  cudaEventSynchronize( stop );
+  cudaEventRecord( stop_malloc, 0 );
+  cudaEventSynchronize( stop_malloc );
   cudaMemcpy(temp1, temp1_dev, size, cudaMemcpyDeviceToHost);
   cudaMemcpy(temp2, temp2_dev, size, cudaMemcpyDeviceToHost);
-  cudaEventRecord( stop1, 0 );
-  cudaEventSynchronize( stop1 );
+  cudaEventRecord( stop_gpu, 0 );
+  cudaEventSynchronize( stop_gpu );
 
-  cudaEventElapsedTime( &elapsed_time_ms, start, stop );
-  printf("Time to calculate results: %f ms.\n", elapsed_time_ms);
-  cudaEventElapsedTime( &elapsed_time_ms, start1, stop1 );
-  printf("Time with I/O: %f ms.\n", elapsed_time_ms);
+  cudaEventElapsedTime( &time_tot, start_malloc, stop_malloc );
+  printf("Time to calculate results: %f ms.\n", time_tot);
+  cudaEventElapsedTime( &time_tot, start_gpu, stop_gpu );
+  printf("Time with I/O: %f ms.\n", time_tot);
 
   float maxError = 0;
   // Output should always be stored in the temp1 and temp1_ref at this point

@@ -22,7 +22,10 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   int gridStride = gridDim.x * blockDim.x;
   int N = (ni-2)*(nj-2);
 
-  for(int k=indexWithinTheGrid; k<N; k+=gridStride){
+  // Calculate the maximum valid index
+  int maxIdx = (blocksPerGrid.x * blockDim.x) - 1;
+
+  for(int k=indexWithinTheGrid;k<maxIdx && k<N; k+=gridStride){
     int i = k % (ni-2) + 1;
     int j = k / (nj-2) + 1;
     printf("i = %d\n", i);
@@ -120,7 +123,33 @@ int main(int argc, char* argv[]){
   cudaEventCreate(&end_malloc);
 
   cudaEventRecord(start_malloc, 0);
-  float *temp1, *temp2, *temp_tmp;
+ float *temp1, *temp2, *temp_tmp;
+
+// Allocate memory with error checking
+int ret;
+ret = cudaMalloc((void **) &temp1, size);
+if (ret != cudaSuccess) {
+  // Handle allocation failure
+  printf("Failed to allocate memory for temp1\n");
+  return 1;
+}
+
+ret = cudaMalloc((void **) &temp2, size);
+if (ret != cudaSuccess) {
+  // Handle allocation failure for temp2
+  printf("Failed to allocate memory for temp2\n");
+  cudaFree(temp1);  // Free previously allocated temp1
+  return 1;
+}
+
+ret = cudaMalloc((void **) &temp_tmp, size);
+if (ret != cudaSuccess) {
+  // Handle allocation failure for temp_tmp
+  printf("Failed to allocate memory for temp_tmp\n");
+  cudaFree(temp1);
+  cudaFree(temp2);
+  return 1;
+}
   cudaMalloc((void **) &temp1, size);
   cudaMalloc((void **) &temp2, size);
   cudaMalloc((void **) &temp_tmp, size);

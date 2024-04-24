@@ -150,8 +150,8 @@ dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
   cudaEventRecord(end_gpu, 0);
   cudaEventSynchronize(end_gpu);
 
-  cudaMemcpy(temp1_init, temp1, size, cudaMemcpyDeviceToHost);
-  cudaMemcpy(temp2_init, temp2, size, cudaMemcpyDeviceToHost);
+  cudaMemcpy(temp1_host, temp1, size, cudaMemcpyDeviceToHost);
+  cudaMemcpy(temp2_host, temp2, size, cudaMemcpyDeviceToHost);
   cudaEventRecord(end_malloc, 0);
   cudaEventSynchronize(end_malloc);
 

@@ -88,6 +88,9 @@ int main(int argc, char* argv[]){
   const int nj = atoi(argv[1]);
   float tfac = 8.418e-5; // thermal diffusivity of silver
 
+  int threadsPerBlock = 10
+  int totalElements = (ni - 2) * (nj - 2);  // Number of valid elements (excluding boundaries)
+  int blocksPerGrid = (totalElements + threadsPerBlock - 1) / threadsPerBlock;
   float *temp1_ref, *temp2_ref, *temp_tmp_ref, *temp1_init, *temp2_init;
 
   const int size = ni * nj * sizeof(float);

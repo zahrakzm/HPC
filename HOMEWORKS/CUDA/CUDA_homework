@@ -1,0 +1,35 @@
+# Makefile for compiling and running code with different variable values
+
+# Compiler
+CC = nvc++
+
+# Compiler flags
+CFLAGS = -g
+
+# Source file
+SRC = heat.cu
+
+# Executable name
+EXEC = heat
+
+# Variable values
+SIZE = 1000 10000 30000
+NUM_THREADS = 1 2 4 8 16 32 64 128 256 512 1024
+
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
+
+run:
+	@$(foreach N, $(SIZE), \
+		$(foreach THREAD, $(NUM_THREADS), \
+			echo Running with N=$(N) and NUM_THREADS=$(THREAD); \
+			./$(EXEC) $(N) $(THREAD); \
+		) \
+	)
+
+clean:
+	rm -f $(EXEC)
+
+.PHONY: all run clean

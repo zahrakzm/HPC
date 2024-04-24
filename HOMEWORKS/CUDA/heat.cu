@@ -88,8 +88,8 @@ int main(int argc, char* argv[]){
 
   temp1_ref = (float*)malloc(size);
   temp2_ref = (float*)malloc(size);
-  temp1 = (float*)malloc(size);
-  temp2 = (float*)malloc(size);
+  temp1_init = (float*)malloc(size);
+  temp2_init = (float*)malloc(size);
 
   // Initialize with random data
   for( int i = 0; i < ni*nj; ++i) {
@@ -110,6 +110,7 @@ int main(int argc, char* argv[]){
   end = clock();
   printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
 
+  float start_malloc, start_gpu, end_gpu, end_malloc;
   cudaEventCreate(&start_malloc);
   cudaEventCreate(&start_gpu);
   cudaEventCreate(&end_gpu);
@@ -125,7 +126,7 @@ int main(int argc, char* argv[]){
   cudaMemcpy(temp2, temp2_init, size, cudaMemcpyHostToDevice);
 
   dim3 threadsPerBlock(num_threads);
-  dim3 blocksPerGrid(((ni/2) * (nj/2) + block.x - 1) / block.x);
+  dim3 blocksPerGrid(((ni/2) * (nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
 
   cudaEventRecord(start_gpu, 0);
   // Execute the modified version using same data
@@ -144,7 +145,7 @@ int main(int argc, char* argv[]){
 
   float malloc_tot_time, gpu_tot_time;
   cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);
-  cudaEventElapsedTime(&gpu_tot_time, gpu_malloc, gpu_malloc);
+  cudaEventElapsedTime(&gpu_tot_time, start_gpu, end_gpu);
   printf("GPU execution time: %f seconds\n", gpu_tot_time);
   printf("GPU + Memory allocation execution time: %f seconds\n", malloc_tot_time);
 

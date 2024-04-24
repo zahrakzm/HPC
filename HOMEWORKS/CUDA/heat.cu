@@ -78,13 +78,15 @@ int main(int argc, char* argv[]){
   int istep;
   int nstep = 200; // number of time steps
   int num_threads = atoi(argv[2]);
+  cudaEvent_t start_malloc, start_gpu, end_gpu, end_malloc;
+  float malloc_tot_time, gpu_tot_time;
 
   // Specify our 2D dimensions
   const int ni = atoi(argv[1]);
   const int nj = atoi(argv[1]);
   float tfac = 8.418e-5; // thermal diffusivity of silver
 
-  float *temp1_ref, *temp2_ref, *temp_tmp_ref, *temp1_init, *temp2_init;
+  float *temp1_ref, *temp2_ref, *temp_tmp_ref, *temp1_host, *temp2_host;
 
   const int size = ni * nj * sizeof(float);
 
@@ -93,26 +95,6 @@ int main(int argc, char* argv[]){
   temp1_init = (float*)malloc(size);
   temp2_init = (float*)malloc(size);
 
-  // Initialize with random data
-  for( int i = 0; i < ni*nj; ++i) {
-    temp1_ref[i] = temp2_ref[i] = temp2_init[i] = temp2_init[i] = (float)rand()/(float)(RAND_MAX/100.0f);
-  }
-
-  clock_t start, end;
-  start = clock();
-  // Execute the CPU-only reference version
-  for (istep=0; istep < nstep; istep++) {
-    step_kernel_ref(ni, nj, tfac, temp1_ref, temp2_ref);
-
-    // swap the temperature pointers
-    temp_tmp_ref = temp1_ref;
-    temp1_ref = temp2_ref;
-    temp2_ref= temp_tmp_ref;
-  }
-  end = clock();
-  printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
-
-  cudaEvent_t start_malloc, start_gpu, end_gpu, end_malloc;
   cudaEventCreate(&start_malloc);
   cudaEventCreate(&start_gpu);
   cudaEventCreate(&end_gpu);
@@ -124,8 +106,29 @@ int main(int argc, char* argv[]){
   cudaMalloc((void **) &temp2, size);
   cudaMalloc((void **) &temp_tmp, size);
 
-  cudaMemcpy(temp1, temp1_init, size, cudaMemcpyHostToDevice);
-  cudaMemcpy(temp2, temp2_init, size, cudaMemcpyHostToDevice);
+  // Initialize with random data
+  for( int i = 0; i < ni*nj; ++i) {
+    temp1_ref[i] = temp2_ref[i] = (float)rand()/(float)(RAND_MAX/100.0f);
+  }
+
+  cudaMemcpy(temp1, temp1_ref, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(temp2, temp2_ref, size, cudaMemcpyHostToDevice);
+
+  //clock_t start, end;
+  //start = clock();
+  // Execute the CPU-only reference version
+  for (istep=0; istep < nstep; istep++) {
+    step_kernel_ref(ni, nj, tfac, temp1_ref, temp2_ref);
+
+    // swap the temperature pointers
+    temp_tmp_ref = temp1_ref;
+    temp1_ref = temp2_ref;
+    temp2_ref= temp_tmp_ref;
+  }
+  //end = clock();
+  //printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
+
+  
 
   dim3 threadsPerBlock(num_threads);
   dim3 blocksPerGrid(((ni/2) * (nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
@@ -148,7 +151,6 @@ int main(int argc, char* argv[]){
   cudaEventRecord(end_malloc, 0);
   cudaEventSynchronize(end_malloc);
 
-  float malloc_tot_time, gpu_tot_time;
   cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);
   cudaEventElapsedTime(&gpu_tot_time, start_gpu, end_gpu);
   printf("GPU execution time: %f seconds\n", gpu_tot_time*1000);

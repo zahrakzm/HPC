@@ -17,7 +17,7 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   int i00, im10, ip10, i0m1, i0p1;
   float d2tdx2, d2tdy2;
 
-  int indexWithinTheGrid = blockIdx.x* blockDim.x+ threadIdx.x;
+  int indexWithinTheGrid = blockIdx.x * blockDim.x + threadIdx.x;
   //int gridStride = gridDim.x * blockDim.x;
   //int N = (ni-2)*(nj-2);
 

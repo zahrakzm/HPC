@@ -149,8 +149,8 @@ int main(int argc, char* argv[]){
   float malloc_tot_time, gpu_tot_time;
   cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);
   cudaEventElapsedTime(&gpu_tot_time, start_gpu, end_gpu);
-  printf("GPU execution time: %f ms\n", gpu_tot_time);
-  printf("GPU + Memory allocation execution time: %f ms\n", malloc_tot_time);
+  printf("GPU execution time: %f seconds\n", gpu_tot_time*1000);
+  printf("GPU + Memory allocation execution time: %f seconds\n", malloc_tot_time*1000);
 
   cudaFree(temp1);
   cudaFree(temp2);

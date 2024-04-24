@@ -161,7 +161,7 @@ int main(int argc, char* argv[]){
   float maxError = 0;
   // Output should always be stored in the temp1_host and temp1_ref at this point
   for( int i = 0; i < ni*nj; ++i ) {
-    if (abs(temp1_host[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1_host[i]-temp1_ref[i]); }
+    if (abs(temp1[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1[i]-temp1_ref[i]); }
   }
 
   // Check and see if our maxError is greater than an error bound

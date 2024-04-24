@@ -7,7 +7,7 @@ CC = nvc++
 CFLAGS = -g
 
 # Source file
-SRC = heat.cu
+SRC = sample.cu
 
 # Executable name
 EXEC = heat

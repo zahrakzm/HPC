@@ -166,7 +166,7 @@ dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
   float maxError = 0;
   // Output should always be stored in the temp1 and temp1_ref at this point
   for( int i = 0; i < ni*nj; ++i ) {
-    if (abs(temp1_init[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1_init[i]-temp1_ref[i]); }
+    if (abs(temp1_host[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1_host[i]-temp1_ref[i]); }
   }
 
   // Check and see if our maxError is greater than an error bound

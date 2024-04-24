@@ -172,7 +172,7 @@ int main(int argc, char* argv[]){
 
   cudaFree(temp1);
   cudaFree(temp2);
-  cudaFree(temp_tmp)
+  cudaFree(temp_tmp);
   free( temp1_ref );
   free( temp2_ref );
   free( temp1 );

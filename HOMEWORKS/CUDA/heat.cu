@@ -21,9 +21,9 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   //int gridStride = gridDim.x * blockDim.x;
   //int N = (ni-2)*(nj-2);
 
-  for(int k=indexWithinTheGrid; k<(ni-2)*(nj-2); k+=gridDim.x * blockDim.x){
-    int i = k % (ni-2) + 1;
-    int j = k / (nj-2) + 1;
+  for(int index=indexWithinTheGrid; index<(ni-2)*(nj-2); index+=gridDim.x * blockDim.x){
+    int i = index % (ni-2) + 1;
+    int j = index / (nj-2) + 1;
     //printf("i = %d\n", i);
     //printf("j = %d\n", j);
 

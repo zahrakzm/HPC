@@ -92,8 +92,8 @@ int main(int argc, char* argv[]){
 
   temp1_ref = (float*)malloc(size);
   temp2_ref = (float*)malloc(size);
-  temp1_init = (float*)malloc(size);
-  temp2_init = (float*)malloc(size);
+  temp1_host = (float*)malloc(size);
+  temp2_host = (float*)malloc(size);
 
   cudaEventCreate(&start_malloc);
   cudaEventCreate(&start_gpu);

@@ -87,14 +87,14 @@ int main(int argc, char* argv[]){
   const int nj = atoi(argv[1]);
   float tfac = 8.418e-5; // thermal diffusivity of silver
 
-  float *temp1_ref, *temp2_ref, *temp_tmp_ref, *temp1_host, *temp2_host;
+  float *temp1_ref, *temp2_ref, *temp1, *temp2, *temp_tmp;
 
   const int size = ni * nj * sizeof(float);
 
   temp1_ref = (float*)malloc(size);
   temp2_ref = (float*)malloc(size);
-  temp1_host = (float*)malloc(size);
-  temp2_host = (float*)malloc(size);
+  temp1 = (float*)malloc(size);
+  temp2 = (float*)malloc(size);
 
   cudaEventCreate(&start_malloc);
   cudaEventCreate(&start_gpu);
@@ -102,18 +102,18 @@ int main(int argc, char* argv[]){
   cudaEventCreate(&end_malloc);
 
   cudaEventRecord(start_malloc, 0);
-  float *temp1, *temp2, *temp_tmp;
-  cudaMalloc((void **) &temp1, size);
-  cudaMalloc((void **) &temp2, size);
-  cudaMalloc((void **) &temp_tmp, size);
+  float *temp1_dev, *temp2_dev, *temp_tmp_dev;
+  cudaMalloc((void **) &temp1_dev, size);
+  cudaMalloc((void **) &temp2_dev, size);
+  cudaMalloc((void **) &temp_tmp_dev, size);
 
   // Initialize with random data
   for( int i = 0; i < ni*nj; ++i) {
     temp1_ref[i] = temp2_ref[i] = (float)rand()/(float)(RAND_MAX/100.0f);
   }
 
-  cudaMemcpy(temp1, temp1_ref, size, cudaMemcpyHostToDevice);
-  cudaMemcpy(temp2, temp2_ref, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(temp1_dev, temp1_ref, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(temp2_dev, temp2_ref, size, cudaMemcpyHostToDevice);
 
   dim3 threadsPerBlock(num_threads);
   dim3 blocksPerGrid(((ni/2)*(nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
@@ -125,9 +125,9 @@ int main(int argc, char* argv[]){
     step_kernel_ref(ni, nj, tfac, temp1_ref, temp2_ref);
 
     // swap the temperature pointers
-    temp_tmp_ref = temp1_ref;
+    temp_tmp = temp1_ref;
     temp1_ref = temp2_ref;
-    temp2_ref= temp_tmp_ref;
+    temp2_ref= temp_tmp;
   }
   //end = clock();
   //printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
@@ -138,18 +138,18 @@ int main(int argc, char* argv[]){
   cudaEventRecord(start_gpu, 0);
   // Execute the modified version using same data
   for (istep=0; istep < nstep; istep++) {
-    step_kernel_mod<<<blocksPerGrid, threadsPerBlock>>>(ni, nj, tfac, temp1, temp2);
+    step_kernel_mod<<<blocksPerGrid, threadsPerBlock>>>(ni, nj, tfac, temp1_dev, temp2_dev);
     cudaDeviceSynchronize();
     // swap the temperature pointers
-    temp_tmp = temp1;
-    temp1 = temp2;
-    temp2= temp_tmp;
+    temp_tmp_dev = temp1_dev;
+    temp1_dev = temp2_dev;
+    temp2_dev = temp_tmp_dev;
   }
   cudaEventRecord(end_gpu, 0);
   cudaEventSynchronize(end_gpu);
 
-  cudaMemcpy(temp1_host, temp1, size, cudaMemcpyDeviceToHost);
-  cudaMemcpy(temp2_host, temp2, size, cudaMemcpyDeviceToHost);
+  cudaMemcpy(temp1, temp1_dev, size, cudaMemcpyDeviceToHost);
+  cudaMemcpy(temp2, temp2_dev, size, cudaMemcpyDeviceToHost);
   cudaEventRecord(end_malloc, 0);
   cudaEventSynchronize(end_malloc);
 

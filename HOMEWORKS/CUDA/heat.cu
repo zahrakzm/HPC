@@ -139,9 +139,12 @@ int main(int argc, char* argv[]){
     temp2= temp_tmp;
   }
   cudaEventRecord(end_gpu, 0);
+  cudaEventSynchronize(end_gpu);
 
   cudaMemcpy(temp1_init, temp1, size, cudaMemcpyDeviceToHost);
   cudaMemcpy(temp2_init, temp2, size, cudaMemcpyDeviceToHost);
+  cudaEventRecord(end_malloc, 0);
+  cudaEventSynchronize(end_malloc);
 
   float malloc_tot_time, gpu_tot_time;
   cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);

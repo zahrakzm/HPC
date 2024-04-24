@@ -7,13 +7,13 @@ CC = nvc++
 CFLAGS = -g
 
 # Source file
-SRC = heat.cu
+SRC = CUDA_homework.cu
 
 # Executable name
 EXEC = heat
 
 # Variable values
-SIZE = 10
+SIZE = 1000 10000 30000
 NUM_THREADS = 1 2 4 8 16 32 64 128 256 512 1024
 
 all: $(EXEC)

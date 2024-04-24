@@ -15,12 +15,14 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   int i00, im10, ip10, i0m1, i0p1;
   float d2tdx2, d2tdy2;
 
-  i = blockIdx.x* blockDim.x+ threadIdx.x;
-  j = blockIdx.y* blockDim.y+ threadIdx.y;
-  index = j*gridDim.x* blockDim.x+i;
+  int indexWithinTheGrid = blockIdx.x* blockDim.x+ threadIdx.x;
+  int gridStride = gridDim.x * blockDim.x;
+  int N = (ni-2)*(nj-2)
 
-  if (index < ni*nj){ 
-    
+  for(int k=indexWithinTheGrid; k<N; k+=gridStride){
+    int i = k % (ni-2) + 1;
+    int j = k % (nj-2) + 1;
+
     i00 = I2D(ni, i, j);
     im10 = I2D(ni, i-1, j);
     ip10 = I2D(ni, i+1, j);
@@ -28,13 +30,12 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
     i0p1 = I2D(ni, i, j+1);
     
     // evaluate derivatives
-    d2tdx2 = temp_in[im10]-2*temp_in[index]+temp_in[ip10];
-    d2tdy2 = temp_in[i0m1]-2*temp_in[index]+temp_in[i0p1];
+    d2tdx2 = temp_in[im10]-2*temp_in[i00]+temp_in[ip10];
+    d2tdy2 = temp_in[i0m1]-2*temp_in[i00]+temp_in[i0p1];
   
     // update temperatures
-    temp_out[index] = temp_in[index]+fact*(d2tdx2 + d2tdy2);
+    temp_out[i00] = temp_in[i00]+fact*(d2tdx2 + d2tdy2);
   }
- 
 }
 
 void step_kernel_ref(int ni, int nj, float fact, float* temp_in, float* temp_out)

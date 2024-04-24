@@ -24,7 +24,7 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
   for(int k=indexWithinTheGrid; k<N; k+=gridStride){
     int i = k % (ni-2) + 1;
     int j = k / (nj-2) + 1;
-    printf("i = %d\n", i);
+    printf("i = %d, ", i);
     printf("j = %d\n", j);
 
     i00 = I2D(ni, i, j);

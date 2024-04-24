@@ -130,8 +130,12 @@ int main(int argc, char* argv[]){
 
   
 
-  dim3 threadsPerBlock(num_threads);
-  dim3 blocksPerGrid(((ni/2) * (nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
+ int totalElements = (ni - 2) * (nj - 2);
+dim3 threadsPerBlock(num_threads);
+dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
+
+  // dim3 threadsPerBlock(num_threads);
+  // dim3 blocksPerGrid(((ni/2) * (nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
 
   cudaEventRecord(start_gpu, 0);
   // Execute the modified version using same data

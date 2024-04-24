@@ -10,31 +10,31 @@
  * `step_kernel_ref` below. Accelerate it to run as a CUDA kernel.
  */
 
-void step_kernel_mod(int ni, int nj, float fact, float* temp_in, float* temp_out)
+__global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, float* temp_out)
 {
   int i00, im10, ip10, i0m1, i0p1;
   float d2tdx2, d2tdy2;
 
+  i = blockIdx.x* blockDim.x+ threadIdx.x;
+  j = blockIdx.y* blockDim.y+ threadIdx.y;
+  index = j*gridDim.x* blockDim.x+i;
 
-  // loop over all points in domain (except boundary)
-  for ( int j=1; j < nj-1; j++ ) {
-    for ( int i=1; i < ni-1; i++ ) {
-      // find indices into linear memory
-      // for central point and neighbours
-      i00 = I2D(ni, i, j);
-      im10 = I2D(ni, i-1, j);
-      ip10 = I2D(ni, i+1, j);
-      i0m1 = I2D(ni, i, j-1);
-      i0p1 = I2D(ni, i, j+1);
-
-      // evaluate derivatives
-      d2tdx2 = temp_in[im10]-2*temp_in[i00]+temp_in[ip10];
-      d2tdy2 = temp_in[i0m1]-2*temp_in[i00]+temp_in[i0p1];
-
-      // update temperatures
-      temp_out[i00] = temp_in[i00]+fact*(d2tdx2 + d2tdy2);
-    }
+  if (index < ni*nj){ 
+    
+    i00 = I2D(ni, i, j);
+    im10 = I2D(ni, i-1, j);
+    ip10 = I2D(ni, i+1, j);
+    i0m1 = I2D(ni, i, j-1);
+    i0p1 = I2D(ni, i, j+1);
+    
+    // evaluate derivatives
+    d2tdx2 = temp_in[im10]-2*temp_in[index]+temp_in[ip10];
+    d2tdy2 = temp_in[i0m1]-2*temp_in[index]+temp_in[i0p1];
+  
+    // update temperatures
+    temp_out[index] = temp_in[index]+fact*(d2tdx2 + d2tdy2);
   }
+ 
 }
 
 void step_kernel_ref(int ni, int nj, float fact, float* temp_in, float* temp_out)

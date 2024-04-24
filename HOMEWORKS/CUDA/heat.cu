@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
+#include <cuda.h>
 
 // Simple define to index into a 1D array from 2D space
 #define I2D(num, c, r) ((r)*(num)+(c))
@@ -65,17 +67,21 @@ void step_kernel_ref(int ni, int nj, float fact, float* temp_in, float* temp_out
   }
 }
 
-int main()
-{
+int main(int argc, char* argv[]){
+  if(argc != 3){
+    printf("Usage: %s <N> <num_threads>\n", argv[0]);
+    return 1;
+  }
+
   int istep;
   int nstep = 200; // number of time steps
 
   // Specify our 2D dimensions
-  const int ni = 1000;
-  const int nj = 1000;
+  const int ni = atoi(argv[1]);
+  const int nj = atoi(argv[1]);
   float tfac = 8.418e-5; // thermal diffusivity of silver
 
-  float *temp1_ref, *temp2_ref, *temp1, *temp2, *temp_tmp;
+  float *temp1_ref, *temp2_ref, *temp_tmp_ref, *temp1_init, *temp2_init;
 
   const int size = ni * nj * sizeof(float);
 
@@ -86,33 +92,68 @@ int main()
 
   // Initialize with random data
   for( int i = 0; i < ni*nj; ++i) {
-    temp1_ref[i] = temp2_ref[i] = temp1[i] = temp2[i] = (float)rand()/(float)(RAND_MAX/100.0f);
+    temp1_ref[i] = temp2_ref[i] = temp2_init[i] = temp2_init[i] = (float)rand()/(float)(RAND_MAX/100.0f);
   }
 
+  clock_t start, end;
+  start = clock();
   // Execute the CPU-only reference version
   for (istep=0; istep < nstep; istep++) {
     step_kernel_ref(ni, nj, tfac, temp1_ref, temp2_ref);
 
     // swap the temperature pointers
-    temp_tmp = temp1_ref;
+    temp_tmp_ref = temp1_ref;
     temp1_ref = temp2_ref;
-    temp2_ref= temp_tmp;
+    temp2_ref= temp_tmp_ref;
   }
+  end = clock();
+  printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
 
+  cudaEventCreate(&start_malloc);
+  cudaEventCreate(&start_gpu);
+  cudaEventCreate(&end_gpu);
+  cudaEventCreate(&end_malloc);
+
+  cudaEventRecord(start_malloc, 0);
+  float *temp1, *temp2, *temp_tmp;
+  cudaMalloc((void **) &temp1, size);
+  cudaMalloc((void **) &temp2, size);
+  cudaMalloc((void **) &temp_tmp, size);
+
+  cudaMemcpy(temp1, temp1_init, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(temp2, temp2_init, size, cudaMemcpyHostToDevice);
+
+  dim3 threadsPerBlock(num_threads);
+  dim3 blocksPerGrid(((ni/2) * (nj/2) + block.x - 1) / block.x)
+
+  cudaEventRecord(start_gpu, 0);
   // Execute the modified version using same data
   for (istep=0; istep < nstep; istep++) {
-    step_kernel_mod(ni, nj, tfac, temp1, temp2);
-
+    step_kernel_mod<<<blocksPerGrid, threadsPerBlock>>>(ni, nj, tfac, temp1, temp2);
+    cudaDeviceSynchronize();
     // swap the temperature pointers
     temp_tmp = temp1;
     temp1 = temp2;
     temp2= temp_tmp;
   }
+  cudaEventRecord(end_gpu, 0);
+
+  cudaMemcpy(temp1_init, temp1, size, cudaMemcpyDeviceToHost);
+  cudaMemcpy(temp2_init, temp2, size, cudaMemcpyDeviceToHost);
+
+  float malloc_tot_time, gpu_tot_time;
+  cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);
+  cudaEventElapsedTime(&gpu_tot_time, gpu_malloc, gpu_malloc);
+  printf("GPU execution time: %f seconds\n", gpu_tot_time);
+  printf("GPU + Memory allocation execution time: %f seconds\n", malloc_tot_time);
+
+  cudaFree(temp1);
+  cudaFree(temp2);
 
   float maxError = 0;
   // Output should always be stored in the temp1 and temp1_ref at this point
   for( int i = 0; i < ni*nj; ++i ) {
-    if (abs(temp1[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1[i]-temp1_ref[i]); }
+    if (abs(temp1_init[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1_init[i]-temp1_ref[i]); }
   }
 
   // Check and see if our maxError is greater than an error bound

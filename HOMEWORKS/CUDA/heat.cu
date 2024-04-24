@@ -114,6 +114,10 @@ int main(int argc, char* argv[]){
   cudaMemcpy(temp1, temp1_ref, size, cudaMemcpyHostToDevice);
   cudaMemcpy(temp2, temp2_ref, size, cudaMemcpyHostToDevice);
 
+  int totalElements = (ni - 2) * (nj - 2);
+  dim3 threadsPerBlock(num_threads);
+  dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
+
   //clock_t start, end;
   //start = clock();
   // Execute the CPU-only reference version
@@ -127,12 +131,6 @@ int main(int argc, char* argv[]){
   }
   //end = clock();
   //printf("CPU-only execution time: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
-
-  
-
- int totalElements = (ni - 2) * (nj - 2);
-dim3 threadsPerBlock(num_threads);
-dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
 
   // dim3 threadsPerBlock(num_threads);
   // dim3 blocksPerGrid(((ni/2) * (nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
@@ -160,11 +158,8 @@ dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
   printf("GPU execution time: %f seconds\n", gpu_tot_time*1000);
   printf("GPU + Memory allocation execution time: %f seconds\n", malloc_tot_time*1000);
 
-  cudaFree(temp1);
-  cudaFree(temp2);
-
   float maxError = 0;
-  // Output should always be stored in the temp1 and temp1_ref at this point
+  // Output should always be stored in the temp1_host and temp1_ref at this point
   for( int i = 0; i < ni*nj; ++i ) {
     if (abs(temp1_host[i]-temp1_ref[i]) > maxError) { maxError = abs(temp1_host[i]-temp1_ref[i]); }
   }
@@ -175,6 +170,9 @@ dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
   else
     printf("The Max Error of %.5f is within acceptable bounds.\n", maxError);
 
+  cudaFree(temp1);
+  cudaFree(temp2);
+  cudaFree(temp_tmp)
   free( temp1_ref );
   free( temp2_ref );
   free( temp1 );

@@ -23,7 +23,7 @@ __global__ void step_kernel_mod(int ni, int nj, float fact, float* temp_in, floa
 
   for(int k=indexWithinTheGrid; k<N; k+=gridStride){
     int i = k % (ni-2) + 1;
-    int j = k % (nj-2) + 1;
+    int j = k / (nj-2) + 1;
 
     i00 = I2D(ni, i, j);
     im10 = I2D(ni, i-1, j);
@@ -146,8 +146,8 @@ int main(int argc, char* argv[]){
   float malloc_tot_time, gpu_tot_time;
   cudaEventElapsedTime(&malloc_tot_time, start_malloc, end_malloc);
   cudaEventElapsedTime(&gpu_tot_time, start_gpu, end_gpu);
-  printf("GPU execution time: %f seconds\n", gpu_tot_time);
-  printf("GPU + Memory allocation execution time: %f seconds\n", malloc_tot_time);
+  printf("GPU execution time: %f ms\n", gpu_tot_time);
+  printf("GPU + Memory allocation execution time: %f ms\n", malloc_tot_time);
 
   cudaFree(temp1);
   cudaFree(temp2);

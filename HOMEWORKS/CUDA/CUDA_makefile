@@ -7,7 +7,7 @@ CC = nvc++
 CFLAGS = -g
 
 # Source file
-SRC = CUDA_homework.cu
+SRC = heat.cu
 
 # Executable name
 EXEC = heat

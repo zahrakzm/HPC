@@ -114,9 +114,8 @@ int main(int argc, char* argv[]){
   cudaMemcpy(temp1, temp1_ref, size, cudaMemcpyHostToDevice);
   cudaMemcpy(temp2, temp2_ref, size, cudaMemcpyHostToDevice);
 
-  int totalElements = (ni - 2) * (nj - 2);
   dim3 threadsPerBlock(num_threads);
-  dim3 blocksPerGrid((totalElements + threadsPerBlock.x - 1) / threadsPerBlock.x);
+  dim3 blocksPerGrid(((ni/2)*(nj/2) + threadsPerBlock.x - 1) / threadsPerBlock.x);
 
   //clock_t start, end;
   //start = clock();

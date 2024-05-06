@@ -2,6 +2,7 @@
 #include <fstream>
 #include <complex>
 #include <chrono>
+#include <time.h>
 
 // Ranges of the set
 #define MIN_X -2

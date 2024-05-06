@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     //const auto end = chrono::steady_clock::now();
     end = (clock() - start) / (double) CLOCKS_PER_SEC;
     cout << "Time elapsed: "
-         << end - start
+         << end
          << " seconds." << endl;
 
     // Write the result to a file

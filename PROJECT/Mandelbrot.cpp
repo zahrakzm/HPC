@@ -55,6 +55,7 @@ int main(int argc, char **argv)
         }
     }
     const auto end = chrono::steady_clock::now();
+    time2 = (clock() - time1) / (double) CLOCKS_PER_SEC;
     cout << "Time elapsed: "
          << chrono::duration_cast<chrono::seconds>(end - start).count()
          << " seconds." << endl;

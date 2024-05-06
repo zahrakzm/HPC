@@ -31,6 +31,7 @@ int main(int argc, char **argv)
     int *const image = new int[HEIGHT * WIDTH];
 
     const auto start = chrono::steady_clock::now();
+    time_t time1 = clock();
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

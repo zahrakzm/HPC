@@ -29,9 +29,10 @@ using namespace std;
 int main(int argc, char **argv)
 {
     int *const image = new int[HEIGHT * WIDTH];
+    double end;
 
-    const auto start = chrono::steady_clock::now();
-    time_t time1 = clock();
+    //const auto start = chrono::steady_clock::now();
+    time_t start = clock();
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;
@@ -54,8 +55,8 @@ int main(int argc, char **argv)
             }
         }
     }
-    const auto end = chrono::steady_clock::now();
-    time2 = (clock() - time1) / (double) CLOCKS_PER_SEC;
+    //const auto end = chrono::steady_clock::now();
+    end = (clock() - time1) / (double) CLOCKS_PER_SEC;
     cout << "Time elapsed: "
          << chrono::duration_cast<chrono::seconds>(end - start).count()
          << " seconds." << endl;

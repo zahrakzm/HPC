@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         printf("Usage: %s <N> <num_threads>\n", argv[0]);
         return 1;
     }
-    
+    printf("Number of threads = %s", atoi(argv[1]));
     int num_threads = atoi(argv[1]);
     int *const image = new int[HEIGHT * WIDTH];
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     double start_time = omp_get_wtime();
 
     omp_set_num_threads(num_threads);
-    printf("Number of threads = %s", num_threads);
+    
 #pragma omp parallel for shared(image) schedule(static)
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {

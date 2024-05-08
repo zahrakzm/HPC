@@ -28,6 +28,13 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+    // size of input array
+    if(argc != 3){
+        printf("Usage: %s <N> <num_threads>\n", argv[0]);
+        return 1;
+    }
+    int N = atoi(argv[1]);
+    int num_threads = atoi(argv[2]);
     int *const image = new int[HEIGHT * WIDTH];
 
     const auto start = chrono::steady_clock::now();

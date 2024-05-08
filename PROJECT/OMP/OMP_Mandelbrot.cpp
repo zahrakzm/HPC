@@ -34,7 +34,7 @@ int main(int argc, char **argv)
         return 1;
     }
     
-    int num_threads = atoi(argv[2]);
+    int num_threads = atoi(argv[1]);
     int *const image = new int[HEIGHT * WIDTH];
 
     // start timer

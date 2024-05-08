@@ -2,7 +2,7 @@
 CC = icc
 
 # Compiler flags
-CFLAGS = -g -fopenmp
+CFLAGS = -g -fopenmp -O3
 
 # Source file
 SRC = OMP_Mandelbrot.cpp

@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     double start_time = omp_get_wtime();
 
     omp_set_num_threads(num_threads);
-#pragma omp parallel for shared(image) private(pos, row, col, c, z, i) schedule(dynamic,chunksize)
+#pragma omp parallel for shared(image) schedule(dynamic,chunksize)
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

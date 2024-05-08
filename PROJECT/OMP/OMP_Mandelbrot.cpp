@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
     omp_set_num_threads(num_threads);
     
-#pragma omp parallel for shared(image) schedule(static)
+#pragma omp parallel for shared(image) schedule(dynamic)
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

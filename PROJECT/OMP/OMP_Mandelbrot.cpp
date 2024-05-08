@@ -29,7 +29,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
     // size of input array
-    if(argc != 3){
+    if(argc != 2){
         printf("Usage: %s <N> <num_threads>\n", argv[0]);
         return 1;
     }

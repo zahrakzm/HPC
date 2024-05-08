@@ -36,12 +36,13 @@ int main(int argc, char **argv)
     
     int num_threads = atoi(argv[1]);
     int *const image = new int[HEIGHT * WIDTH];
+    int chuncksize = 50;
 
     // start timer
     double start_time = omp_get_wtime();
 
     omp_set_num_threads(num_threads);
-    #pragma omp parallel for shared(image, WIDTH, HEIGHT, STEP, MIN_X, MIN_Y) private(pos, row, col, c, z, i) schedule(static)
+    #pragma omp parallel for shared(image, WIDTH, HEIGHT, STEP, MIN_X, MIN_Y) private(pos, row, col, c, z, i) schedule(static, chuncksize)
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

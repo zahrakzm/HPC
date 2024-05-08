@@ -21,7 +21,7 @@ $(EXEC): $(SRC)
 run:
 	@$(foreach THREAD, $(NUM_THREADS), \
 		echo Running with NUM_THREADS=$(THREAD); \
-		./$(EXEC) OMP_NUM_THREADS=$(THREAD); \
+		./$(EXEC) $(THREAD); \
 	)
 
 clean:

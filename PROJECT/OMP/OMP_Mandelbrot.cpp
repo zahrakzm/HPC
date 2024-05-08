@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         printf("Usage: %s <N> <num_threads>\n", argv[0]);
         return 1;
     }
-    printf("Number of threads = %s\n", argv);
+    printf("Number of threads = %s\n", argv[0]);
     int num_threads = atoi(argv[1]);
     int *const image = new int[HEIGHT * WIDTH];
 

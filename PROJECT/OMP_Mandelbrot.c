@@ -2,6 +2,7 @@
 #include <fstream>
 #include <complex>
 #include <chrono>
+#include <omp.h>
 
 // Ranges of the set
 #define MIN_X -2
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
     int *const image = new int[HEIGHT * WIDTH];
 
     const auto start = chrono::steady_clock::now();
+    #pragma omp parallel for shared(image, WIDTH, HEIGHT, STEP, MIN_X, MIN_Y) private(pos, row, col, c, z, i) schedule(static)
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

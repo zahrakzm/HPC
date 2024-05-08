@@ -1,3 +1,33 @@
+# Compiler
+CC = icc
+
+# Compiler flags
+CFLAGS = -g -fopenmp
+
+# Source file
+SRC = OMP_Mandelbrot.c
+
+# Executable name
+EXEC = omp_homework
+
+# Variable values for number of threads
+NUM_THREADS = 1 2 4 6 8 10 12 14 16 18 20 22 24
+
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
+
+run:
+	@$(foreach THREAD, $(NUM_THREADS), \
+		echo Running with NUM_THREADS=$(THREAD); \
+		./$(EXEC) $(THREAD); \
+	)
+
+clean:
+	rm -f $(EXEC)
+
+.PHONY: all run clean
 # Makefile for compiling and running code with different variable values
 
 # Compiler

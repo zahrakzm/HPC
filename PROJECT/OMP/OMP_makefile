@@ -5,7 +5,7 @@ CC = icc
 CFLAGS = -g -fopenmp
 
 # Source file
-SRC = OMP_Mandelbrot.c
+SRC = OMP_Mandelbrot.cpp
 
 # Executable name
 EXEC = omp_homework

@@ -29,19 +29,19 @@ using namespace std;
 int main(int argc, char **argv)
 {
     // size of input array
-    if(argc != 2){
+    if(argc != 3){
         printf("Usage: %s <N> <num_threads>\n", argv[0]);
         return 1;
     }
     
-    int num_threads = atoi(argv[1]);
+    int num_threads = atoi(argv[2]);
     int *const image = new int[HEIGHT * WIDTH];
 
     // start timer
     double start_time = omp_get_wtime();
 
     omp_set_num_threads(num_threads);
-    #pragma omp parallel for shared(image, WIDTH, HEIGHT, STEP, MIN_X, MIN_Y) private(pos, row, col, c, z, i) schedule(static)
+    #pragma omp parallel for shared(image, WIDTH, HEIGHT, STEP, MIN_X, MIN_Y) private(pos, row, col, c, z, i) schedule(static,atoi(argv[1]))
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;

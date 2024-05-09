@@ -15,7 +15,7 @@
 #define RATIO_Y (MAX_Y - MIN_Y)
 
 // Image size
-#define RESOLUTION 2000
+#define RESOLUTION 4000
 #define WIDTH (RATIO_X * RESOLUTION)
 #define HEIGHT (RATIO_Y * RESOLUTION)
 
@@ -124,9 +124,9 @@ int main(int argc, char **argv)
     cudaEventSynchronize( stop_malloc );
 
     cudaEventElapsedTime( &time_tot, start_gpu, stop_gpu );
-    printf("Time to calculate results: %f ms.\n", time_tot);
+    printf("Time to calculate results: %f s.\n", time_tot*1000);
     cudaEventElapsedTime( &time_tot, start_malloc, stop_malloc );
-    printf("Time with I/O: %f ms.\n", time_tot);
+    printf("Time with I/O: %f s.\n", time_tot*1000);
 
     // free resources on device
     cudaFree(image_dev);

@@ -15,7 +15,7 @@
 #define RATIO_Y (MAX_Y - MIN_Y)
 
 // Image size
-#define RESOLUTION 8000
+#define RESOLUTION 1000
 #define WIDTH (RATIO_X * RESOLUTION)
 #define HEIGHT (RATIO_Y * RESOLUTION)
 

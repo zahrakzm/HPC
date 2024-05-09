@@ -2,7 +2,6 @@
 #include <fstream>
 #include <complex>
 #include <chrono>
-#include <cuda.h>
 
 // Ranges of the set
 #define MIN_X -2
@@ -26,7 +25,8 @@
 
 using namespace std;
 
-void mandelbrot_ref(int *image){
+void mandelbrot_ref(int *image)
+{
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;
@@ -53,10 +53,14 @@ void mandelbrot_ref(int *image){
 
 __global__ void mandelbrot_dev(int *image)
 {
-    // define index
-    int indexWithinTheGrid = blockIdx.x * blockDim.x + threadIdx.x;
-    
-    if(indexWithinTheGrid < HEIGHT * WIDTH)
+    int colIndexWithinTheGrid = blockIdx.x * blockDim.x + threadIdx.x;
+	int rowIndexWithinTheGrid = blockIdx.y * blockDim.y + threadIdx.y;
+
+	if (colIndexWithinTheGrid >= WIDTH || rowIndexWithinTheGrid >= HEIGHT)
+		return;
+
+	int indexWithinTheGrid = rowIndexWithinTheGrid * WIDTH + colIndexWithinTheGrid;
+    if (indexWithinTheGrid < HEIGHT * WIDTH)
     {
         image[indexWithinTheGrid] = 0;
 
@@ -73,7 +77,7 @@ __global__ void mandelbrot_dev(int *image)
             // If it is convergent
             if (abs(z) >= 2)
             {
-                image[indexWithinTheGrid] = i;
+                image[pos] = i;
                 break;
             }
         }
@@ -107,14 +111,14 @@ int main(int argc, char **argv)
     cudaMalloc((void **) &image_dev, size);
     // copy data from host to device
     cudaMemcpy(image_dev, image_ref, size, cudaMemcpyHostToDevice);
-
-    dim3 block(num_threads);
-    dim3 grid((WIDTH*HEIGHT)/block.x+1);
-
+   
+    dim3 threadsPerBlock(num_threads, num_threads);
+	dim3 blocksPerGrid((WIDTH + threadsPerBlock.x - 1) / threadsPerBlock.x, (HEIGHT + threadsPerBlock.y - 1) / threadsPerBlock.y);
+    
     //const auto start = chrono::steady_clock::now();
     cudaEventRecord( start_gpu, 0 );
 
-    mandelbrot_dev<<<grid,block>>>(image_dev);
+    mandelbrot_dev<<<blocksPerGrid,threadsPerBlock>>>(image_dev);
     //cudaDeviceSynchronize();
 
     cudaEventRecord( stop_gpu, 0 );
@@ -151,7 +155,7 @@ int main(int argc, char **argv)
     {
         for (int col = 0; col < WIDTH; col++)
         {
-            matrix_out << image_ref[row * WIDTH + col];
+            matrix_out << image[row * WIDTH + col];
 
             if (col < WIDTH - 1)
                 matrix_out << ',';
@@ -161,6 +165,6 @@ int main(int argc, char **argv)
     }
     matrix_out.close();
 
-    delete[] image_ref; // It's here for coding style, but useless
+    delete[] image; // It's here for coding style, but useless
     return 0;
 }

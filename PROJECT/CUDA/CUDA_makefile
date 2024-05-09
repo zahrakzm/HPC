@@ -1,17 +1,17 @@
 # Compiler
-CC = icc
+CC = nvc++
 
 # Compiler flags
-CFLAGS = -g -fopenmp -O3
+CFLAGS = -g -O3
 
 # Source file
-SRC = OMP_Mandelbrot.cpp
+SRC = CUDA_Mandelbrot.cu
 
 # Executable name
-EXEC = omp_mandelbrot
+EXEC = CUDA_mandelbrot
 
 # Variable values for number of threads
-NUM_THREADS = 1 2 4 6 8 10 12 14 16 18 20 22 24
+NUM_THREADS = 1 2 4 8 16 32 64 128 256 512 1024
 
 all: $(EXEC)
 

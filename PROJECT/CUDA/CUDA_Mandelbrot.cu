@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     int *const image_ref = new int[HEIGHT * WIDTH];
 
     cudaEvent_t start_malloc, stop_malloc, start_gpu, stop_gpu;
-    double time_tot;
+    float time_tot;
 
     const int size = HEIGHT * WIDTH * sizeof(int);
     image_ref = (int*)malloc(size);
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     //const auto start = chrono::steady_clock::now();
     cudaEventRecord( start_gpu, 0 );
 
-    mandelbrot_dev<<<grid,block>>>(image_dev, HEIGHT, WIDTH, STEP, ITERATIONS);
+    mandelbrot_dev<<<grid,block>>>(image_dev);
     //cudaDeviceSynchronize();
 
     cudaEventRecord( stop_gpu, 0 );
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
     {
         for (int col = 0; col < WIDTH; col++)
         {
-            matrix_out << image[row * WIDTH + col];
+            matrix_out << image_ref[row * WIDTH + col];
 
             if (col < WIDTH - 1)
                 matrix_out << ',';
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
     }
     matrix_out.close();
 
-    delete[] image; // It's here for coding style, but useless
+    delete[] image_ref; // It's here for coding style, but useless
     return 0;
 }
 

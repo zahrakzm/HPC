@@ -26,7 +26,7 @@
 
 using namespace std;
 
-void mandelbrot_ref(int *image, int HEIGHT, int WIDTH, double STEP, int ITERATIONS){
+void mandelbrot_ref(int *image){
     for (int pos = 0; pos < HEIGHT * WIDTH; pos++)
     {
         image[pos] = 0;
@@ -51,7 +51,7 @@ void mandelbrot_ref(int *image, int HEIGHT, int WIDTH, double STEP, int ITERATIO
     }
 }
 
-__global__ void mandelbrot_dev(int *image, int HEIGHT, int WIDTH, double STEP, int ITERATIONS)
+__global__ void mandelbrot_dev(int *image)
 {
     // define index
     int indexWithinTheGrid = blockIdx.x * blockDim.x + threadIdx.x;

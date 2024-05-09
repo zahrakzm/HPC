@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     }
     printf("Number of threads = %s\n", argv[1]);
     int num_threads = atoi(argv[1]);
-    int *const image_ref = new int[HEIGHT * WIDTH];
+    int *image_ref = new int[HEIGHT * WIDTH];
 
     cudaEvent_t start_malloc, stop_malloc, start_gpu, stop_gpu;
     float time_tot;
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
     cudaEventCreate( &stop_gpu );
 
     cudaEventRecord( start_malloc, 0 );
-    int *const image_dev = new int[HEIGHT * WIDTH];
+    int image_dev = new int[HEIGHT * WIDTH];
     cudaMalloc((void **) &image_dev, size);
     // copy data from host to device
     cudaMemcpy(image_dev, image_ref, size, cudaMemcpyHostToDevice);

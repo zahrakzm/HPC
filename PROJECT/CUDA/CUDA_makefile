@@ -1,0 +1,30 @@
+# Compiler
+CC = icc
+
+# Compiler flags
+CFLAGS = -g -fopenmp -O3
+
+# Source file
+SRC = OMP_Mandelbrot.cpp
+
+# Executable name
+EXEC = omp_mandelbrot
+
+# Variable values for number of threads
+NUM_THREADS = 1 2 4 6 8 10 12 14 16 18 20 22 24
+
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
+
+run:
+	@$(foreach THREAD, $(NUM_THREADS), \
+		echo Running with NUM_THREADS=$(THREAD); \
+		./$(EXEC) $(THREAD); \
+	)
+
+clean:
+	rm -f $(EXEC)
+
+.PHONY: all run clean

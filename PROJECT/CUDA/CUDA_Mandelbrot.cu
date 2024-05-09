@@ -103,7 +103,7 @@ int main(int argc, char **argv)
     cudaEventCreate( &stop_gpu );
 
     cudaEventRecord( start_malloc, 0 );
-    int image_dev = new int[HEIGHT * WIDTH];
+    int *image_dev = new int[HEIGHT * WIDTH];
     cudaMalloc((void **) &image_dev, size);
     // copy data from host to device
     cudaMemcpy(image_dev, image_ref, size, cudaMemcpyHostToDevice);

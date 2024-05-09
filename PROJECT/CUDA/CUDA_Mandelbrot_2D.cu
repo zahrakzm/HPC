@@ -113,7 +113,7 @@ int main(int argc, char **argv)
     cudaMemcpy(image_dev, image_ref, size, cudaMemcpyHostToDevice);
    
     dim3 threadsPerBlock(num_threads, num_threads);
-	dim3 blocksPerGrid((WIDTH + threadsPerBlock.x - 1) / threadsPerBlock.x, (HEIGHT + threadsPerBlock.y - 1) / threadsPerBlock.y);
+    dim3 blocksPerGrid((WIDTH + threadsPerBlock.x - 1) / threadsPerBlock.x, (HEIGHT + threadsPerBlock.y - 1) / threadsPerBlock.y);
     
     //const auto start = chrono::steady_clock::now();
     cudaEventRecord( start_gpu, 0 );

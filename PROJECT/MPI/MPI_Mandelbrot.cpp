@@ -28,6 +28,8 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+    double start_time, end_time;
+    
     MPI_Init(&argc, &argv);
     int world_size, world_rank;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);

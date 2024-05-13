@@ -48,7 +48,8 @@ int main(int argc, char **argv)
         image = new int[HEIGHT * WIDTH];
     }
 
-    const auto start = chrono::steady_clock::now();
+    //const auto start = chrono::steady_clock::now();
+    start_time = MPI_Wtime();
     for (int pos = start_index; pos < end_index; pos++)
     {
         const int row = pos / WIDTH;
@@ -73,9 +74,10 @@ int main(int argc, char **argv)
     MPI_Gather(sub_image, pixels_per_node, MPI_INT, image, pixels_per_node, MPI_INT, 0, MPI_COMM_WORLD);
 
     if(world_size==0){
-        const auto end = chrono::steady_clock::now();
+        //const auto end = chrono::steady_clock::now();
+        end_time = MPI_Wtime();
         cout << "Time elapsed: "
-             << chrono::duration_cast<chrono::seconds>(end - start).count()
+             << end_time - start_time
              << " seconds." << endl;
     
         // Write the result to a file

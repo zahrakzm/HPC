@@ -77,7 +77,7 @@ __global__ void mandelbrot_dev(int *image)
             // If it is convergent
             if (abs(z) >= 2)
             {
-                image[pos] = i;
+                image[indexWithinTheGrid] = i;
                 break;
             }
         }
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     {
         for (int col = 0; col < WIDTH; col++)
         {
-            matrix_out << image[row * WIDTH + col];
+            matrix_out << image_ref[row * WIDTH + col];
 
             if (col < WIDTH - 1)
                 matrix_out << ',';
@@ -165,6 +165,6 @@ int main(int argc, char **argv)
     }
     matrix_out.close();
 
-    delete[] image; // It's here for coding style, but useless
+    delete[] image_ref; // It's here for coding style, but useless
     return 0;
 }

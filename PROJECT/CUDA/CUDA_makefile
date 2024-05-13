@@ -5,10 +5,10 @@ CC = nvc++
 CFLAGS = -g -O3
 
 # Source file
-SRC = CUDA_Mandelbrot.cu
+SRC = CUDA_Mandelbrot_2D.cu
 
 # Executable name
-EXEC = CUDA_mandelbrot
+EXEC = CUDA_mandelbrot_2D
 
 # Variable values for number of threads
 NUM_THREADS = 1 2 4 8 16 32 64 128 256 512 1024

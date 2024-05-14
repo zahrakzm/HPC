@@ -31,7 +31,7 @@ int main(int argc, char **argv)
         node_sum = node_sum + f;
     }
 
-    MPI_Reduce(&node_sum, &tot_sum, 1, MPI_DOUBLE, MPISUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&node_sum, &tot_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if(rank==0){
         pi = dx*tot_sum;

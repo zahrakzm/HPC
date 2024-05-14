@@ -1,1 +1,30 @@
+# Compiler
+CC = mpicc
 
+# Compiler flags
+CFLAGS = -g -fopenmp -O3
+
+# Source file
+SRC = MPI_Mandelbrot.cpp
+
+# Executable name
+EXEC = mpi_mandelbrot
+
+# Variable values for number of threads
+NUM_PROCESSES = 1 2 4 6 8 10 12 14 16 18 20 22 24
+
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC)
+
+run:
+	@$(foreach PROCESSES, $(NUM_PROCESSES), \
+		echo Running with NUM_PROCESSES=$(PROCESSES); \
+		mpirun -np $(PROCESSES)./$(EXEC); \
+	)
+
+clean:
+	rm -f $(EXEC)
+
+.PHONY: all run clean

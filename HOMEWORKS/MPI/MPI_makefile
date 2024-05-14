@@ -5,10 +5,10 @@ CC = mpicc
 CFLAGS = -g -fopenmp -O3
 
 # Source file
-SRC = MPI_Mandelbrot.cpp
+SRC = pi_homework.c
 
 # Executable name
-EXEC = mpi_mandelbrot
+EXEC = pi_homework
 
 # Variable values for number of threads
 NUM_PROCESSES = 1 2 4 6 8 10 12 14 16 18 20 22 24

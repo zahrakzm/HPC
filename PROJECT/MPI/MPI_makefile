@@ -2,7 +2,8 @@
 CC = mpicc
 
 # Compiler flags
-CFLAGS = -g -fopenmp -O3 -std=c++11 -lstdc++
+CFLAGS = -g -fopenmp -O3 -std=c++11
+LDFLAGS = -lstdc++
 
 # Source file
 SRC = MPI_Mandelbrot.cpp

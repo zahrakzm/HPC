@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     const int end_idx = (world_rank + 1) * pixel_per_node;
 
     int *image;
-    int *sub_image + new int[pixel_per_node];
+    int *sub_image = new int[pixel_per_node];
 
     if(world_rank==0){
         image = new int[HEIGHT * WIDTH];

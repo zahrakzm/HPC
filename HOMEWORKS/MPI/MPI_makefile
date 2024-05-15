@@ -11,7 +11,7 @@ SRC = pi_homework.c
 EXEC = pi_homework
 
 # Variable values for number of threads
-NUM_PROCESSES = 4 8 16 32 64 128 256 512 1024 2048
+NUM_PROCESSES = 1 2 4 8 16 32 64 128 256 512 1024 2048
 
 all: $(EXEC)
 

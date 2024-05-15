@@ -16,7 +16,7 @@ NUM_PROCESSES = 1 2 4 8 16 32 64 128 256 512 10224 2048
 all: $(EXEC)
 
 $(EXEC): $(SRC)
-	$(CC) $(CFLAGS) -o $(EXEC) $(SRC) 
+	$(CC) $(CFLAGS) -o $(EXEC) $(SRC) -lm -std=c++11 -lstdc++
 
 run:
 	@$(foreach PROCESSES, $(NUM_PROCESSES), \

@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
     //const auto start = chrono::steady_clock::now();
     start_time = MPI_Wtime();
-    for (int pos = start_index; pos < end_index; pos++)
+    for (int pos = start_idx; pos < end_idx; pos++)
     {
         const int row = pos / WIDTH;
         const int col = pos % WIDTH;
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
             // If it is convergent
             if (abs(z) >= 2)
             {
-                sub_image[pos-start_index] = i;
+                sub_image[pos-start_idx] = i;
                 break;
             }
         }

@@ -4,7 +4,7 @@
                
 #define PI25DT 3.141592653589793238462643
 
-#define INTERVALS 10000000000
+#define INTERVALS 100000000000
 
 int main(int argc, char **argv)
 {

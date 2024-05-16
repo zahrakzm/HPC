@@ -21,7 +21,7 @@ $(EXEC): $(SRC)
 run:
 	@$(foreach PROCESSES, $(NUM_PROCESSES), \
 		echo Running with NUM_PROCESSES=$(PROCESSES); \
-		mpirun -np $(PROCESSES) -hostfile machinefile.txt ./$(EXEC); \
+		mpirun -np $(PROCESSES) -hostfile machinefile.txt ./$(EXEC) out.txt; \
 	)
 
 clean:

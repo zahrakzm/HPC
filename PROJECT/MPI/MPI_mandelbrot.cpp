@@ -42,10 +42,10 @@ int main(int argc, char **argv) {
     int *image_part = new int[rows_per_process * WIDTH];
 
     const auto start = chrono::steady_clock::now();
-int numt = atoi(argv[1])
-omp_set_num_threads(numt);
+//int numt = atoi(argv[1])
+//omp_set_num_threads(numt);
     
-#pragma omp parallel for shared(image_part) ///for the OMP + MPI version
+//#pragma omp parallel for shared(image_part) ///for the OMP + MPI version
     for (int pos = 0; pos < rows_per_process * WIDTH; pos++) {
         int global_pos = (start_row * WIDTH) + pos; 
         image_part[pos] = 0;

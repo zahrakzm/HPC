@@ -2,7 +2,11 @@
 #include <fstream>
 #include <complex>
 #include <chrono>
-#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <omp.h>
 #include <mpi.h>
 
 // Ranges of the set

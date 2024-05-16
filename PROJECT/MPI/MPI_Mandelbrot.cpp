@@ -38,7 +38,7 @@ int main(int argc, char **argv)
         printf("Number of nodes: %s\n", world_size);
     }
 
-    int rows_per_node = HIEGHT / world_size;
+    int rows_per_node = HEIGHT / world_size;
     int start_row = world_rank * rows_per_node;
     int *sub_image = new int[rows_per_node * WIDTH];
     double start_time = MPI_Wtime();
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     //omp_set_num_threads(num_threads);
 
     //#pragma omp parallel for shared(sub_image)  
-    for (int pos = 0; pos < rows_per_process*WIDTH; pos++)
+    for (int pos = 0; pos < rows_per_node*WIDTH; pos++)
     {
         int global_pos = (start_row*WIDTH) + pos;
         sub_image[pos] = 0;

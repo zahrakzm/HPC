@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 
     if(world_rank==0){
         //const auto end = chrono::steady_clock::now();
-        double start_time = MPI_Wtime();
+        double end_time = MPI_Wtime();
         cout << "Time elapsed: "
              << (end_time - start_time)
              << " seconds." << endl;

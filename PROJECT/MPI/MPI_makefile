@@ -5,7 +5,7 @@ CC = mpicc
 CFLAGS = -g -fopenmp -O3
 
 # Source file
-SRC = MPI_Mandelbrot.cpp
+SRC = MPI_mandelbrot.cpp
 
 # Executable name
 EXEC = mpi_mandelbrot

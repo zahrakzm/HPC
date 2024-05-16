@@ -40,8 +40,9 @@ int main(int argc, char **argv) {
     int rows_per_node = HEIGHT / size;
     int start_row = rank * rows_per_node;
     int *sub_image = new int[rows_per_node * WIDTH];
-
-    const auto start = chrono::steady_clock::now();
+    double start_time, end_time;
+    start_time = MPI_wtime();
+    //const auto start = chrono::steady_clock::now();
 //int num_threads = atoi(argv[1])
 //omp_set_num_threads(num_threads);
     
@@ -74,9 +75,9 @@ int main(int argc, char **argv) {
                0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        const auto end = chrono::steady_clock::now();
+        end_time = MPI_Wtime();
         cout << "Time elapsed: "
-             << chrono::duration_cast<chrono::milliseconds>(end - start).count()
+             << (end_time - start_time)
              << " milliseconds." << endl;
 
         ofstream matrix_out;

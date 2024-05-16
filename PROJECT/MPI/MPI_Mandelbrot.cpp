@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 
     MPI_Gather(sub_image, pixels_per_node, MPI_INT, image, pixels_per_node, MPI_INT, 0, MPI_COMM_WORLD);
 
-    if(world_size==0){
+    if(world_rank==0){
         //const auto end = chrono::steady_clock::now();
         end_time = MPI_Wtime();
         cout << "Time elapsed: "

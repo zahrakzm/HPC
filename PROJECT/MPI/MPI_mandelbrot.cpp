@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     int start_row = rank * rows_per_node;
     int *sub_image = new int[rows_per_node * WIDTH];
     double start_time, end_time;
-    start_time = MPI_wtime();
+    start_time = MPI_Wtime();
     //const auto start = chrono::steady_clock::now();
 //int num_threads = atoi(argv[1])
 //omp_set_num_threads(num_threads);

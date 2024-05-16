@@ -40,15 +40,16 @@ int main(int argc, char **argv)
         printf("Number of nodes: %s\n", world_size);
     }
 
-    const int pixel_per_node = HEIGHT * WIDTH / world_size;
-    const int start_idx = world_rank * pixel_per_node;
-    const int end_idx = (world_rank + 1) * pixel_per_node;
+    const int total_pixels = HEIGHT * WIDTH;
+    const int pixels_per_node = total_pixels / world_size;
+    const int start_idx = world_rank * pixels_per_node;
+    const int end_idx = (world_rank + 1) * pixels_per_node;
 
     int *image;
-    int *sub_image = new int[pixel_per_node];
+    int *sub_image = new int[pixels_per_node];
 
     if(world_rank==0){
-        image = new int[HEIGHT * WIDTH];
+        image = new int[total_pixels];
     }
 
     //const auto start = chrono::steady_clock::now();
@@ -74,13 +75,13 @@ int main(int argc, char **argv)
         }
     }
 
-    MPI_Gather(sub_image, pixel_per_node, MPI_INT, image, pixel_per_node, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(sub_image, pixels_per_node, MPI_INT, image, pixels_per_node, MPI_INT, 0, MPI_COMM_WORLD);
 
     if(world_size==0){
         //const auto end = chrono::steady_clock::now();
         end_time = MPI_Wtime();
         cout << "Time elapsed: "
-             << end_time - start_time
+             << (end_time - start_time)
              << " seconds." << endl;
     
         // Write the result to a file

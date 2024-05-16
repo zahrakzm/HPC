@@ -20,7 +20,7 @@
 #define RATIO_Y (MAX_Y - MIN_Y)
 
 // Image size
-#define RESOLUTION 5000
+#define RESOLUTION 1000
 #define WIDTH (RATIO_X * RESOLUTION)
 #define HEIGHT (RATIO_Y * RESOLUTION)
 
@@ -33,22 +33,22 @@ using namespace std;
 
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
-    int world_rank, world_size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    int rows_per_process = HEIGHT / world_size;
-    int start_row = world_rank * rows_per_process;
-    int *image_part = new int[rows_per_process * WIDTH];
+    int rows_per_node = HEIGHT / size;
+    int start_row = rank * rows_per_node;
+    int *sub_image = new int[rows_per_node * WIDTH];
 
     const auto start = chrono::steady_clock::now();
-//int numt = atoi(argv[1])
-//omp_set_num_threads(numt);
+//int num_threads = atoi(argv[1])
+//omp_set_num_threads(num_threads);
     
-//#pragma omp parallel for shared(image_part) ///for the OMP + MPI version
-    for (int pos = 0; pos < rows_per_process * WIDTH; pos++) {
+//#pragma omp parallel for shared(sub_image) ///for the OMP + MPI version
+    for (int pos = 0; pos < rows_per_node * WIDTH; pos++) {
         int global_pos = (start_row * WIDTH) + pos; 
-        image_part[pos] = 0;
+        sub_image[pos] = 0;
 
         const int row = global_pos / WIDTH;
         const int col = global_pos % WIDTH;
@@ -58,22 +58,22 @@ int main(int argc, char **argv) {
         for (int i = 1; i <= ITERATIONS; i++) {
             z = pow(z, 2) + c;
             if (abs(z) >= 2) {
-                image_part[pos] = i;
+                sub_image[pos] = i;
                 break;
             }
         }
     }
 
-    int *complete_image = nullptr;
-    if (world_rank == 0) {
-        complete_image = new int[HEIGHT * WIDTH];
+    int *image = nullptr;
+    if (rank == 0) {
+        image = new int[HEIGHT * WIDTH];
     }
 
-    MPI_Gather(image_part, rows_per_process * WIDTH, MPI_INT,
-               complete_image, rows_per_process * WIDTH, MPI_INT,
+    MPI_Gather(sub_image, rows_per_node * WIDTH, MPI_INT,
+               image, rows_per_node * WIDTH, MPI_INT,
                0, MPI_COMM_WORLD);
 
-    if (world_rank == 0) {
+    if (rank == 0) {
         const auto end = chrono::steady_clock::now();
         cout << "Time elapsed: "
              << chrono::duration_cast<chrono::milliseconds>(end - start).count()
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 
         for (int row = 0; row < HEIGHT; row++) {
             for (int col = 0; col < WIDTH; col++) {
-                matrix_out << complete_image[row * WIDTH + col];
+                matrix_out << image[row * WIDTH + col];
                 if (col < WIDTH - 1)
                     matrix_out << ',';
             }
@@ -103,10 +103,10 @@ int main(int argc, char **argv) {
         }
         matrix_out.close();
 
-        delete[] complete_image;
+        delete[] image;
     }
 
-    delete[] image_part;
+    delete[] sub_image;
     MPI_Finalize();
     return 0;
 }

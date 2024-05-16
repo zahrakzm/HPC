@@ -20,11 +20,11 @@ $(EXEC): $(SRC)
 	$(CC) $(CFLAGS) -o $(EXEC) $(SRC) -lm -std=c++11 -lstdc++
 
 run:
-  @$(foreach PROCESSES, $(NUM_PROCESSES), \
-	  $(foreach THREADS, $(NUM_THREADS), \
-      echo Running with NUM_PROCESSES=$(PROCESSES) and NUM_THREADS=$(THREADS); \
-	    mpirun -np $(PROCESSES) -hostfile machinefile.txt ./$(EXEC) $(THREADS) out.txt; \
-    ) \
+	@$(foreach PROCESSES, $(NUM_PROCESSES), \
+		$(foreach THREADS, $(NUM_THREADS), \
+			echo Running with NUM_PROCESSES=$(PROCESSES) and NUM_THREADS=$(THREADS); \
+			mpirun -np $(PROCESSES) -hostfile machinefile.txt ./$(EXEC) $(THREADS) out.txt; \
+    		) \
 	)
 
 clean:

@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     //const auto start = chrono::steady_clock::now();
     int num_threads = atoi(argv[1]);
     omp_set_num_threads(num_threads);
-    printf("num_threads = %s", num_threads);
+    //printf("num_threads = %s", num_threads);
     
 #pragma omp parallel for shared(sub_image) ///for the OMP + MPI version
     for (int pos = 0; pos < rows_per_node * WIDTH; pos++) {

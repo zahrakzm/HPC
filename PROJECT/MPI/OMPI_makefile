@@ -11,8 +11,8 @@ SRC = MPI_Mandelbrot.cpp
 EXEC = mpi_mandelbrot
 
 # Variable values for number of threads
-NUM_PROCESSES = 1 2 4 8 16 32 64 128 256 512 1024 2048
-NUM_THREADS = 8 12 16 20 24
+NUM_PROCESSES = 1 4 16 64 256 1024 2048
+NUM_THREADS = 2 4 8 16 24
 
 all: $(EXEC)
 

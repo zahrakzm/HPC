@@ -20,7 +20,7 @@
 #define RATIO_Y (MAX_Y - MIN_Y)
 
 // Image size
-#define RESOLUTION 8000
+#define RESOLUTION 1000
 #define WIDTH (RATIO_X * RESOLUTION)
 #define HEIGHT (RATIO_Y * RESOLUTION)
 
@@ -43,10 +43,10 @@ int main(int argc, char **argv) {
     double start_time, end_time;
     start_time = MPI_Wtime();
     //const auto start = chrono::steady_clock::now();
-//int num_threads = atoi(argv[1])
-//omp_set_num_threads(num_threads);
+    int num_threads = atoi(argv[1])
+    omp_set_num_threads(num_threads);
     
-//#pragma omp parallel for shared(sub_image) ///for the OMP + MPI version
+#pragma omp parallel for shared(sub_image) ///for the OMP + MPI version
     for (int pos = 0; pos < rows_per_node * WIDTH; pos++) {
         int global_pos = (start_row * WIDTH) + pos; 
         sub_image[pos] = 0;
